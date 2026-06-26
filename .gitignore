@@ -1,0 +1,14 @@
+# Ignore local environment variables configuration secrets
+.env
+
+# Python caching systems
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
