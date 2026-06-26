@@ -108,7 +108,8 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
 def login(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == username).first()
     
-    if not user or user.password != password:
+    # Fix: Use your local verification helper to check the text against your hash
+    if not user or not verify_password(password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
     token_payload = {
@@ -123,7 +124,6 @@ def login(username: str = Form(...), password: str = Form(...), db: Session = De
         "user_id": str(user.id),
         "username": user.username
     }
-
 
 # --- FINANCIAL PROFILES ---
 
