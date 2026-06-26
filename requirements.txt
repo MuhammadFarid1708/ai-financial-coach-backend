@@ -4,3 +4,4 @@ sqlalchemy==2.0.31
 psycopg[binary]
 python-dotenv==1.0.1
 openrouter
+pyjwt
