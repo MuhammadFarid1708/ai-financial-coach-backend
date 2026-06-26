@@ -215,11 +215,10 @@ async def financial_chat(request: ChatRequest, db: Session = Depends(get_db)):
                 item = word
             break
 
-    # ─── FIXED: FINANCE RELEVANCE GUARDRAIL CHECK ───
+    # Relevance check
     timeline_modifiers = ["month", "mos", "mo", "year", "yrs", "yr", "from savings", "through savings", "use money", "what if", "what abt"]
     is_valid_followup = any(mod in prompt_text for mod in timeline_modifiers)
     
-    # Verify if history exists to prevent false positives on fresh out-of-scope prompts
     has_session_history = False
     if request.session_id:
         try:
@@ -236,7 +235,7 @@ async def financial_chat(request: ChatRequest, db: Session = Depends(get_db)):
             "chart_data": None
         }
 
-    # ─── DEEP CONVERSATIONAL CONTEXT RECOVERY MATRIX ───
+    # Deep Context Recovery Matrix
     if (target_amount == 0 or item is None) and request.session_id:
         try:
             session_uuid = uuid.UUID(request.session_id)
@@ -267,7 +266,6 @@ async def financial_chat(request: ChatRequest, db: Session = Depends(get_db)):
         except Exception as memory_err:
             print(f"Deep context memory lookup failed: {memory_err}")
 
-    # Safety boundary check if context tracing yields no variables on a generic empty session thread
     if target_amount == 0 and not is_tax and not is_loan:
         return {
             "strategy": "I can only assist with financial planning, budget strategies, tax optimization, and asset acquisition modeling. I can't reply to this prompt.",
